@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!-- Mod by Nixz • Dev -->
 <resources>
   <string name="issue_report_title">समस्या आ रही है?</string>
   <string name="issue_report_body">क्या कोई बग मिला या कोई फ़ीडबैक है?</string>
@@ -235,7 +236,7 @@
   <string name="settings_enable_avc_spoof">AVC spoofing</string>
   <string name="settings_enable_avc_spoof_summary">Fix selinux context leak caused by avc denial in audit log.</string>
   <string name="manage_repositories">Manage Repositories</string>
-  <string name="app_name">KernelSU-Next</string>
+  <string name="app_name" translatable="false">KimoSU</string>
   <string name="require_kernel_version">The current KernelSU-Next version %1$d is too low for the manager to work properly. Please upgrade to version %2$d or higher!</string>
   <string name="profile_umount_modules_summary">Enabling this option will allow KernelSU-Next to restore any modified files by the modules for this app.</string>
   <string name="settings_uninstall_temporary_message">Temporarily uninstall KernelSU-Next, restore to original state after next reboot.</string>

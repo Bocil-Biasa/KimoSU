@@ -1,3 +1,4 @@
+// Mod by Nixz • Dev
 use anyhow::{Context, Error, Ok, Result, bail};
 use rustix::fs::{Mode, OFlags, open};
 use rustix::process::setpgid;
@@ -271,7 +272,7 @@ pub fn uninstall(package_name: &str) -> Result<()> {
         out: None,
         out_name: None,
     })?;
-    println!("- Uninstall KernelSU-Next manager..");
+    println!("- Uninstall KimoSU manager..");
     Command::new("pm")
         .args(["uninstall", package_name])
         .spawn()?;

@@ -17,5 +17,6 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "KernelSU-Next"
+// Mod by Nixz • Dev
+rootProject.name = "KimoSU"
 include(":app")

@@ -1,3 +1,4 @@
+// Mod by Nixz • Dev
 import com.android.build.api.dsl.ApplicationDefaultConfig
 import com.android.build.api.dsl.CommonExtension
 import com.android.build.gradle.api.AndroidBasePlugin
@@ -37,14 +38,42 @@ val androidTargetCompatibility = JavaVersion.VERSION_21
 val managerVersionCode by extra(getVersionCode())
 val managerVersionName by extra(getVersionName())
 
+fun findGitBinary(): String {
+    val candidates = listOf(
+        "/data/data/com.termux/files/usr/bin/git",
+        "/usr/bin/git",
+        "/usr/local/bin/git",
+        "git"
+    )
+    return candidates.firstOrNull { java.io.File(it).canExecute() } ?: "git"
+}
+
 fun getGitCommitCount(): Int {
-    val process = Runtime.getRuntime().exec(arrayOf("git", "rev-list", "--count", "HEAD"))
-    return process.inputStream.bufferedReader().use { it.readText().trim().toInt() }
+    return try {
+        val git = findGitBinary()
+        val process = ProcessBuilder(git, "rev-list", "--count", "HEAD")
+            .directory(rootDir)
+            .start()
+        val count = process.inputStream.bufferedReader().use { it.readText().trim() }.toIntOrNull()
+        process.waitFor()
+        count ?: 3452
+    } catch (_: Exception) {
+        3452
+    }
 }
 
 fun getGitDescribe(): String {
-    val process = Runtime.getRuntime().exec(arrayOf("git", "describe", "--tags", "--always"))
-    return process.inputStream.bufferedReader().use { it.readText().trim() }
+    return try {
+        val git = findGitBinary()
+        val process = ProcessBuilder(git, "describe", "--tags", "--always")
+            .directory(rootDir)
+            .start()
+        val desc = process.inputStream.bufferedReader().use { it.readText().trim() }
+        process.waitFor()
+        if (desc.isNotBlank() && !desc.startsWith("fatal")) desc else "v3.4.2"
+    } catch (_: Exception) {
+        "v3.4.2"
+    }
 }
 
 fun getVersionCode(): Int {

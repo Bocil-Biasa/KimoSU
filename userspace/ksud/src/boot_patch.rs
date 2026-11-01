@@ -1,3 +1,4 @@
+// Mod by Nixz • Dev
 #![allow(clippy::ref_option, clippy::needless_pass_by_value)]
 
 use std::fs::File;
@@ -891,7 +892,7 @@ pub fn patch(args: BootPatchArgs) -> Result<()> {
             let output_dir = out.unwrap_or(std::env::current_dir()?);
             let name = out_name.unwrap_or_else(|| {
                 let now = chrono::Utc::now();
-                format!("kernelsu_next_patched_{}.img", now.format("%Y%m%d_%H%M%S"))
+                format!("kimosu_patched_{}.img", now.format("%Y%m%d_%H%M%S"))
             });
             let output_image = output_dir.join(name);
             std::fs::write(&output_image, &new_boot_bytes).context("write out new boot failed")?;
@@ -1059,7 +1060,7 @@ pub fn restore(args: BootRestoreArgs) -> Result<()> {
         let output_dir = out.unwrap_or(std::env::current_dir()?);
         let name = out_name.unwrap_or_else(|| {
             let now = chrono::Utc::now();
-            format!("kernelsu_next_restore_{}.img", now.format("%Y%m%d_%H%M%S"))
+            format!("kimosu_restore_{}.img", now.format("%Y%m%d_%H%M%S"))
         });
         let output_image = output_dir.join(name);
         std::fs::write(&output_image, &new_boot_bytes).context("copy out new boot failed")?;

@@ -1,4 +1,5 @@
 #!/system/bin/sh
+# Mod by Nixz • Dev
 ############################################
 # KernelSU installer script
 # mostly from module_installer.sh
@@ -410,7 +411,7 @@ install_module() {
     set_permissions
   else
     print_title "$MODNAME" "by $MODAUTH"
-    print_title "Powered by KernelSU-Next"
+    print_title "Powered by KimoSU"
 
     unzip -o "$ZIPFILE" customize.sh -d $MODPATH >&2
 

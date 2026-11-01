@@ -1,8 +1,9 @@
+# Mod by Nixz • Dev
 name: Build Manager CI
 
 on:
   push:
-    branches: [ "dev" ]
+    branches: [ "dev", "kimosu-dev" ]
     paths:
       - '.github/workflows/build-manager.yml'
       - '.github/workflows/build-lkm.yml'
@@ -11,7 +12,7 @@ on:
       - 'kernel/**'
       - 'userspace/**'
   pull_request:
-    branches: [ "dev" ]
+    branches: [ "dev", "kimosu-dev" ]
     paths:
       - '.github/workflows/build-manager.yml'
       - '.github/workflows/build-lkm.yml'

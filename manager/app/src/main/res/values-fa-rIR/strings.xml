@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!-- Mod by Nixz • Dev -->
 <resources>
   <string name="issue_report_title">مشکلی دارید؟</string>
   <string name="issue_report_body">با اشکالی مواجه شدید یا بازخوردی دارید؟</string>
@@ -235,7 +236,7 @@
   <string name="settings_enable_avc_spoof">جعل AVC</string>
   <string name="settings_enable_avc_spoof_summary">رفع نشت Context مربوط به Selinux که بر اثر Avc denial در گزارش Audit ایجاد میشود.</string>
   <string name="manage_repositories">مدیریت مخازن</string>
-  <string name="app_name">KernelSU-Next</string>
+  <string name="app_name" translatable="false">KimoSU</string>
   <string name="require_kernel_version">نسخه فعلی KernelSU-Next %1$d برای عملکرد صحیح مدیریت، بسیار ضعیف است. لطفاً به نسخه %2$d یا بالاتر ارتقا دهید!</string>
   <string name="profile_umount_modules_summary">فعال کردن این گزینه به KernelSU-Next اجازه می‌دهد تا هرگونه فایل تغییر یافته توسط ماژول‌های این برنامه را بازیابی کند.</string>
   <string name="settings_uninstall_temporary_message">KernelSU-Next را موقتاً حذف نصب کنید، سپس پس از راه‌اندازی مجدد بعدی، سیستم را به حالت اولیه بازگردانید.</string>
