@@ -84,6 +84,12 @@ private fun AboutCardContent() {
                     style = MaterialTheme.typography.bodySmall,
                     fontSize = 14.sp
                 )
+                Text(
+                    text = "Modded by Nixz",
+                    style = MaterialTheme.typography.labelMedium,
+                    color = MaterialTheme.colorScheme.primary,
+                    fontWeight = FontWeight.Bold
+                )
 
                 Spacer(modifier = Modifier.height(8.dp))
 

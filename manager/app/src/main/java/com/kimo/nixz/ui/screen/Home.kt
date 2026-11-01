@@ -1267,6 +1267,13 @@ fun ContributorsCard() {
 
     val contributors = listOf(
         Contributor(
+            login = "Bocil-Biasa",
+            name = "Nixz",
+            githubUrl = "https://github.com/Bocil-Biasa",
+            role = stringResource(R.string.contributor_modder),
+            donationUrl = "https://github.com/Bocil-Biasa/KimoSU"
+        ),
+        Contributor(
             login = "rifsxd",
             name = "Rifat Azad",
             githubUrl = "https://github.com/rifsxd",

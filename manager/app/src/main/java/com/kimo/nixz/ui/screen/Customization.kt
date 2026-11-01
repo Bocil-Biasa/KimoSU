@@ -21,10 +21,11 @@ import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.Contrast
 import androidx.compose.material.icons.filled.Dock
 import androidx.compose.material.icons.filled.Palette
+import androidx.compose.material.icons.filled.RoundedCorner
+import androidx.compose.material.icons.filled.Speed
 import androidx.compose.material.icons.filled.Style
 import androidx.compose.material.icons.filled.TouchApp
 import androidx.compose.material.icons.filled.Translate
-import androidx.compose.material.icons.filled.Vibration
 import androidx.compose.material.icons.filled.ViewCarousel
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -63,16 +64,11 @@ import com.kimo.nixz.ui.util.refreshActivity
 import com.kimo.nixz.ui.util.LocalSnackbarHost
 import com.kimo.nixz.ui.util.LocaleHelper
 
-/**
- * @author rifsxd
- * @date 2025/6/1.
- */
 @OptIn(ExperimentalMaterial3Api::class)
 @Destination<RootGraph>
 @Composable
 fun CustomizationScreen(navigator: DestinationsNavigator) {
     val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior(rememberTopAppBarState())
-    // Bottom bar scroll tracking
     val bottomBarScrollState = LocalScrollState.current
     val bottomBarScrollConnection = if (bottomBarScrollState != null) {
         rememberScrollConnection(
@@ -113,6 +109,26 @@ fun CustomizationScreen(navigator: DestinationsNavigator) {
         mutableStateOf(prefs.getString("ripple_color", "") ?: "")
     }
     var showRippleSheet by remember { mutableStateOf(false) }
+
+    var currentDarkVariant by rememberSaveable {
+        mutableStateOf(prefs.getString("dark_variant", "Default") ?: "Default")
+    }
+    var showDarkVariantSheet by remember { mutableStateOf(false) }
+
+    var currentCornerRadius by rememberSaveable {
+        mutableIntStateOf(prefs.getInt("corner_radius", 16))
+    }
+    var showCornerRadiusSheet by remember { mutableStateOf(false) }
+
+    var currentTransitionStyle by rememberSaveable {
+        mutableStateOf(prefs.getString("transition_style", "Fluid") ?: "Fluid")
+    }
+    var showTransitionStyleSheet by remember { mutableStateOf(false) }
+
+    var currentTransitionSpeed by rememberSaveable {
+        mutableIntStateOf(prefs.getInt("transition_speed", 320))
+    }
+    var showTransitionSpeedSheet by remember { mutableStateOf(false) }
 
     LifecycleEventEffect(Lifecycle.Event.ON_RESUME) {
         currentAppLocale = LocaleHelper.getCurrentAppLocale(context)
@@ -174,6 +190,7 @@ fun CustomizationScreen(navigator: DestinationsNavigator) {
             )
 
             val styling = stringResource(id = R.string.settings_styling)
+            val stylingDisplay = if (currentStyling == "MiuiX") "MiuiX (HyperOS Squircle)" else "Default (Material 3)"
             ListItem(
                 leadingContent = { Icon(Icons.Filled.Style, styling) },
                 headlineContent = { Text(
@@ -181,11 +198,53 @@ fun CustomizationScreen(navigator: DestinationsNavigator) {
                     style = MaterialTheme.typography.titleMedium,
                     fontWeight = FontWeight.SemiBold,
                 ) },
-                supportingContent = { Text(currentStyling) },
+                supportingContent = { Text(stylingDisplay) },
                 modifier = Modifier.clickable {
                     showStylingSheet = true
                 }
             )
+
+            val cornerRadiusTitle = stringResource(id = R.string.settings_corner_radius)
+            val cornerRadiusDisplay = when (currentCornerRadius) {
+                8 -> "Sharp (8 dp)"
+                24 -> "MiuiX Squircle (24 dp)"
+                32 -> "Pill (32 dp)"
+                else -> "Default (16 dp)"
+            }
+            ListItem(
+                leadingContent = { Icon(Icons.Filled.RoundedCorner, cornerRadiusTitle) },
+                headlineContent = { Text(
+                    text = cornerRadiusTitle,
+                    style = MaterialTheme.typography.titleMedium,
+                    fontWeight = FontWeight.SemiBold,
+                ) },
+                supportingContent = { Text(cornerRadiusDisplay) },
+                modifier = Modifier.clickable {
+                    showCornerRadiusSheet = true
+                }
+            )
+
+            if (isSystemInDarkTheme()) {
+                val darkVariantTitle = stringResource(id = R.string.settings_dark_variant)
+                val darkVariantDisplay = when (currentDarkVariant) {
+                    "Amoled" -> "AMOLED Black"
+                    "Midnight" -> "Midnight Navy"
+                    "Mocha" -> "Catppuccin Mocha"
+                    else -> "Default Charcoal"
+                }
+                ListItem(
+                    leadingContent = { Icon(Icons.Filled.Contrast, darkVariantTitle) },
+                    headlineContent = { Text(
+                        text = darkVariantTitle,
+                        style = MaterialTheme.typography.titleMedium,
+                        fontWeight = FontWeight.SemiBold,
+                    ) },
+                    supportingContent = { Text(darkVariantDisplay) },
+                    modifier = Modifier.clickable {
+                        showDarkVariantSheet = true
+                    }
+                )
+            }
 
             val accentColorTitle = stringResource(id = R.string.settings_accent_color)
             val parsedAccent = remember(currentAccentColor) { parseHexColor(currentAccentColor) }
@@ -255,6 +314,45 @@ fun CustomizationScreen(navigator: DestinationsNavigator) {
                 }
             )
 
+            val transitionTitle = stringResource(id = R.string.settings_transition_style)
+            val transitionDisplay = when (currentTransitionStyle) {
+                "Spring" -> "Bouncy Spring"
+                "Fade" -> "Smooth Fade"
+                "Slide" -> "Classic Slide"
+                else -> "Fluid (Scale & Slide)"
+            }
+            ListItem(
+                leadingContent = { Icon(Icons.Filled.Animation, transitionTitle) },
+                headlineContent = { Text(
+                    text = transitionTitle,
+                    style = MaterialTheme.typography.titleMedium,
+                    fontWeight = FontWeight.SemiBold,
+                ) },
+                supportingContent = { Text(transitionDisplay) },
+                modifier = Modifier.clickable {
+                    showTransitionStyleSheet = true
+                }
+            )
+
+            val speedTitle = stringResource(id = R.string.settings_transition_speed)
+            val speedDisplay = when (currentTransitionSpeed) {
+                220 -> "Fast (220 ms)"
+                450 -> "Relaxed (450 ms)"
+                else -> "Normal (320 ms)"
+            }
+            ListItem(
+                leadingContent = { Icon(Icons.Filled.Speed, speedTitle) },
+                headlineContent = { Text(
+                    text = speedTitle,
+                    style = MaterialTheme.typography.titleMedium,
+                    fontWeight = FontWeight.SemiBold,
+                ) },
+                supportingContent = { Text(speedDisplay) },
+                modifier = Modifier.clickable {
+                    showTransitionSpeedSheet = true
+                }
+            )
+
             var useBanner by rememberSaveable {
                 mutableStateOf(
                     prefs.getBoolean("use_banner", true)
@@ -269,24 +367,6 @@ fun CustomizationScreen(navigator: DestinationsNavigator) {
                 ) {
                     prefs.edit { putBoolean("use_banner", it) }
                     useBanner = it
-                }
-            }
-
-            var enableAmoled by rememberSaveable {
-                mutableStateOf(
-                    prefs.getBoolean("enable_amoled", false)
-                )
-            }
-            if (isSystemInDarkTheme()) {
-                val activity = LocalContext.current as? MainActivity
-                SwitchItem(
-                    icon = Icons.Filled.Contrast,
-                    title = stringResource(id = R.string.settings_amoled_mode),
-                    summary = stringResource(id = R.string.settings_amoled_mode_summary),
-                    checked = enableAmoled
-                ) { checked ->
-                    activity?.setAmoledMode(checked)
-                    enableAmoled = checked
                 }
             }
 
@@ -349,6 +429,66 @@ fun CustomizationScreen(navigator: DestinationsNavigator) {
                     currentStyling = style
                     prefs.edit { putString("styling", style) }
                     (context as? MainActivity)?.setStyling(style)
+                }
+            }
+        )
+    }
+
+    if (showDarkVariantSheet) {
+        DarkVariantBottomSheet(
+            selectedVariant = currentDarkVariant,
+            onDismiss = { showDarkVariantSheet = false },
+            onVariantSelected = { variant ->
+                showDarkVariantSheet = false
+                if (variant != currentDarkVariant) {
+                    currentDarkVariant = variant
+                    prefs.edit { putString("dark_variant", variant) }
+                    (context as? MainActivity)?.setDarkVariant(variant)
+                }
+            }
+        )
+    }
+
+    if (showCornerRadiusSheet) {
+        CornerRadiusBottomSheet(
+            selectedRadius = currentCornerRadius,
+            onDismiss = { showCornerRadiusSheet = false },
+            onRadiusSelected = { radius ->
+                showCornerRadiusSheet = false
+                if (radius != currentCornerRadius) {
+                    currentCornerRadius = radius
+                    prefs.edit { putInt("corner_radius", radius) }
+                    (context as? MainActivity)?.setCornerRadius(radius)
+                }
+            }
+        )
+    }
+
+    if (showTransitionStyleSheet) {
+        TransitionStyleBottomSheet(
+            selectedStyle = currentTransitionStyle,
+            onDismiss = { showTransitionStyleSheet = false },
+            onStyleSelected = { style ->
+                showTransitionStyleSheet = false
+                if (style != currentTransitionStyle) {
+                    currentTransitionStyle = style
+                    prefs.edit { putString("transition_style", style) }
+                    (context as? MainActivity)?.setTransitionStyle(style)
+                }
+            }
+        )
+    }
+
+    if (showTransitionSpeedSheet) {
+        TransitionSpeedBottomSheet(
+            selectedSpeed = currentTransitionSpeed,
+            onDismiss = { showTransitionSpeedSheet = false },
+            onSpeedSelected = { speed ->
+                showTransitionSpeedSheet = false
+                if (speed != currentTransitionSpeed) {
+                    currentTransitionSpeed = speed
+                    prefs.edit { putInt("transition_speed", speed) }
+                    (context as? MainActivity)?.setTransitionSpeed(speed)
                 }
             }
         )
@@ -445,7 +585,10 @@ private fun StylingBottomSheet(
     onStyleSelected: (String) -> Unit
 ) {
     val sheetState = rememberModalBottomSheetState()
-    val options = listOf("Default", "MiuiX")
+    val options = listOf(
+        "Default" to "Material 3 / Pixel standard with dynamic surfaces",
+        "MiuiX" to "HyperOS & MIUI Squircle with high-contrast surfaces"
+    )
 
     ModalBottomSheet(
         onDismissRequest = onDismiss,
@@ -468,10 +611,11 @@ private fun StylingBottomSheet(
                 .selectableGroup(),
             contentPadding = PaddingValues(bottom = 24.dp)
         ) {
-            items(options, key = { it }) { style ->
+            items(options, key = { it.first }) { (style, description) ->
                 val selected = style == selectedStyle
                 ListItem(
-                    headlineContent = { Text(style) },
+                    headlineContent = { Text(style, fontWeight = FontWeight.SemiBold) },
+                    supportingContent = { Text(description) },
                     trailingContent = {
                         RadioButton(selected = selected, onClick = null)
                     },
@@ -484,6 +628,244 @@ private fun StylingBottomSheet(
                             selected = selected,
                             role = Role.RadioButton,
                             onClick = { onStyleSelected(style) }
+                        )
+                )
+            }
+        }
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+private fun DarkVariantBottomSheet(
+    selectedVariant: String,
+    onDismiss: () -> Unit,
+    onVariantSelected: (String) -> Unit
+) {
+    val sheetState = rememberModalBottomSheetState()
+    val options = listOf(
+        "Default" to "Default Charcoal (Standard Material Dark)",
+        "Amoled" to "Pure AMOLED Black (#000000)",
+        "Midnight" to "Midnight Navy (Deep Cybernetic #0A0E17)",
+        "Mocha" to "Catppuccin Mocha (#1E1E2E)"
+    )
+
+    ModalBottomSheet(
+        onDismissRequest = onDismiss,
+        sheetState = sheetState,
+        containerColor = MaterialTheme.colorScheme.background
+    ) {
+        Text(
+            text = stringResource(R.string.settings_dark_variant),
+            style = MaterialTheme.typography.titleLarge,
+            fontWeight = FontWeight.Black,
+            modifier = Modifier
+                .padding(horizontal = 24.dp, vertical = 8.dp)
+                .semantics { heading() }
+        )
+
+        LazyColumn(
+            modifier = Modifier
+                .fillMaxWidth()
+                .weight(1f, fill = false)
+                .selectableGroup(),
+            contentPadding = PaddingValues(bottom = 24.dp)
+        ) {
+            items(options, key = { it.first }) { (variant, description) ->
+                val selected = variant == selectedVariant
+                ListItem(
+                    headlineContent = { Text(variant, fontWeight = FontWeight.SemiBold) },
+                    supportingContent = { Text(description) },
+                    trailingContent = {
+                        RadioButton(selected = selected, onClick = null)
+                    },
+                    colors = ListItemDefaults.colors(
+                        containerColor = MaterialTheme.colorScheme.background
+                    ),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .selectable(
+                            selected = selected,
+                            role = Role.RadioButton,
+                            onClick = { onVariantSelected(variant) }
+                        )
+                )
+            }
+        }
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+private fun CornerRadiusBottomSheet(
+    selectedRadius: Int,
+    onDismiss: () -> Unit,
+    onRadiusSelected: (Int) -> Unit
+) {
+    val sheetState = rememberModalBottomSheetState()
+    val options = listOf(
+        16 to "Default Round (16 dp)",
+        24 to "MiuiX Squircle (24 dp)",
+        32 to "Pill Shape (32 dp)",
+        8 to "Sharp / Minimal (8 dp)"
+    )
+
+    ModalBottomSheet(
+        onDismissRequest = onDismiss,
+        sheetState = sheetState,
+        containerColor = MaterialTheme.colorScheme.background
+    ) {
+        Text(
+            text = stringResource(R.string.settings_corner_radius),
+            style = MaterialTheme.typography.titleLarge,
+            fontWeight = FontWeight.Black,
+            modifier = Modifier
+                .padding(horizontal = 24.dp, vertical = 8.dp)
+                .semantics { heading() }
+        )
+
+        LazyColumn(
+            modifier = Modifier
+                .fillMaxWidth()
+                .weight(1f, fill = false)
+                .selectableGroup(),
+            contentPadding = PaddingValues(bottom = 24.dp)
+        ) {
+            items(options, key = { it.first }) { (radius, label) ->
+                val selected = radius == selectedRadius
+                ListItem(
+                    headlineContent = { Text(label, fontWeight = FontWeight.SemiBold) },
+                    trailingContent = {
+                        RadioButton(selected = selected, onClick = null)
+                    },
+                    colors = ListItemDefaults.colors(
+                        containerColor = MaterialTheme.colorScheme.background
+                    ),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .selectable(
+                            selected = selected,
+                            role = Role.RadioButton,
+                            onClick = { onRadiusSelected(radius) }
+                        )
+                )
+            }
+        }
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+private fun TransitionStyleBottomSheet(
+    selectedStyle: String,
+    onDismiss: () -> Unit,
+    onStyleSelected: (String) -> Unit
+) {
+    val sheetState = rememberModalBottomSheetState()
+    val options = listOf(
+        "Fluid" to "Fluid (Scale & Slide) - Modern fluid motion",
+        "Spring" to "Bouncy Spring - Energetic tactile bounce",
+        "Fade" to "Smooth Fade - Clean crossfade",
+        "Slide" to "Classic Slide - Traditional horizontal slide"
+    )
+
+    ModalBottomSheet(
+        onDismissRequest = onDismiss,
+        sheetState = sheetState,
+        containerColor = MaterialTheme.colorScheme.background
+    ) {
+        Text(
+            text = stringResource(R.string.settings_transition_style),
+            style = MaterialTheme.typography.titleLarge,
+            fontWeight = FontWeight.Black,
+            modifier = Modifier
+                .padding(horizontal = 24.dp, vertical = 8.dp)
+                .semantics { heading() }
+        )
+
+        LazyColumn(
+            modifier = Modifier
+                .fillMaxWidth()
+                .weight(1f, fill = false)
+                .selectableGroup(),
+            contentPadding = PaddingValues(bottom = 24.dp)
+        ) {
+            items(options, key = { it.first }) { (style, description) ->
+                val selected = style == selectedStyle
+                ListItem(
+                    headlineContent = { Text(style, fontWeight = FontWeight.SemiBold) },
+                    supportingContent = { Text(description) },
+                    trailingContent = {
+                        RadioButton(selected = selected, onClick = null)
+                    },
+                    colors = ListItemDefaults.colors(
+                        containerColor = MaterialTheme.colorScheme.background
+                    ),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .selectable(
+                            selected = selected,
+                            role = Role.RadioButton,
+                            onClick = { onStyleSelected(style) }
+                        )
+                )
+            }
+        }
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+private fun TransitionSpeedBottomSheet(
+    selectedSpeed: Int,
+    onDismiss: () -> Unit,
+    onSpeedSelected: (Int) -> Unit
+) {
+    val sheetState = rememberModalBottomSheetState()
+    val options = listOf(
+        220 to "Fast (220 ms) - Snappy and instantaneous",
+        320 to "Normal (320 ms) - Balanced and natural",
+        450 to "Relaxed (450 ms) - Smooth cinematic feel"
+    )
+
+    ModalBottomSheet(
+        onDismissRequest = onDismiss,
+        sheetState = sheetState,
+        containerColor = MaterialTheme.colorScheme.background
+    ) {
+        Text(
+            text = stringResource(R.string.settings_transition_speed),
+            style = MaterialTheme.typography.titleLarge,
+            fontWeight = FontWeight.Black,
+            modifier = Modifier
+                .padding(horizontal = 24.dp, vertical = 8.dp)
+                .semantics { heading() }
+        )
+
+        LazyColumn(
+            modifier = Modifier
+                .fillMaxWidth()
+                .weight(1f, fill = false)
+                .selectableGroup(),
+            contentPadding = PaddingValues(bottom = 24.dp)
+        ) {
+            items(options, key = { it.first }) { (speed, description) ->
+                val selected = speed == selectedSpeed
+                ListItem(
+                    headlineContent = { Text(description.substringBefore(" -"), fontWeight = FontWeight.SemiBold) },
+                    supportingContent = { Text(description.substringAfter("- ")) },
+                    trailingContent = {
+                        RadioButton(selected = selected, onClick = null)
+                    },
+                    colors = ListItemDefaults.colors(
+                        containerColor = MaterialTheme.colorScheme.background
+                    ),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .selectable(
+                            selected = selected,
+                            role = Role.RadioButton,
+                            onClick = { onSpeedSelected(speed) }
                         )
                 )
             }

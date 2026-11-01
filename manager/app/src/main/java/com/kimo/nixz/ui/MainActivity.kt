@@ -209,6 +209,10 @@ class MainActivity : FragmentActivity() {
     var amoledModeState = mutableStateOf(false)
     var navBarEnabled = mutableStateOf(true)
     var stylingState = mutableStateOf("Default")
+    var darkVariantState = mutableStateOf("Default")
+    var cornerRadiusState = mutableStateOf(16)
+    var transitionStyleState = mutableStateOf("Fluid")
+    var transitionSpeedState = mutableStateOf(320)
     var accentColorState = mutableStateOf<androidx.compose.ui.graphics.Color?>(null)
     var rippleColorState = mutableStateOf<androidx.compose.ui.graphics.Color?>(null)
     private val handler = Handler(Looper.getMainLooper())
@@ -243,6 +247,10 @@ class MainActivity : FragmentActivity() {
             amoledModeState.value = prefsInit.getBoolean("enable_amoled", false)
             navBarEnabled.value = prefsInit.getBoolean("enable_navbar", true)
             stylingState.value = prefsInit.getString("styling", "Default") ?: "Default"
+            darkVariantState.value = prefsInit.getString("dark_variant", "Default") ?: "Default"
+            cornerRadiusState.value = prefsInit.getInt("corner_radius", 16)
+            transitionStyleState.value = prefsInit.getString("transition_style", "Fluid") ?: "Fluid"
+            transitionSpeedState.value = prefsInit.getInt("transition_speed", 320)
             val accentHex = prefsInit.getString("accent_color", "") ?: ""
             accentColorState.value = com.kimo.nixz.ui.theme.parseHexColor(accentHex)
             val rippleHex = prefsInit.getString("ripple_color", "") ?: ""
@@ -274,6 +282,8 @@ class MainActivity : FragmentActivity() {
             KernelSUTheme(
                 amoledMode = amoledModeState.value,
                 styling = stylingState.value,
+                darkVariant = darkVariantState.value,
+                cornerRadius = cornerRadiusState.value,
                 accentColor = accentColorState.value,
                 rippleColor = rippleColorState.value
             ) {
@@ -483,18 +493,46 @@ class MainActivity : FragmentActivity() {
                                                 val targetIndex = BottomBarDestination.entries.indexOfFirst { it.direction.route == targetRoute }
                                                 val initialIndex = BottomBarDestination.entries.indexOfFirst { it.direction.route == initialRoute }
 
-                                                when {
-                                                    // Bottom bar → bottom bar: slide based on index direction
-                                                    targetIndex != -1 && initialIndex != -1 -> {
-                                                        val offsetSign = (if (targetIndex > initialIndex) 1 else -1) * animationDirection
-                                                        slideInHorizontally(initialOffsetX = { it * offsetSign }, animationSpec = tween(300))
+                                                val offsetSign = (if (targetIndex != -1 && initialIndex != -1) {
+                                                    if (targetIndex > initialIndex) 1 else -1
+                                                } else if (targetRoute in bottomBarRoutes && initialRoute !in bottomBarRoutes) {
+                                                    -1
+                                                } else {
+                                                    1
+                                                }) * animationDirection
+
+                                                val duration = transitionSpeedState.value
+                                                when (transitionStyleState.value) {
+                                                    "Spring" -> {
+                                                        slideInHorizontally(
+                                                            initialOffsetX = { (it * 0.35f * offsetSign).toInt() },
+                                                            animationSpec = spring(dampingRatio = 0.72f, stiffness = 500f)
+                                                        ) + fadeIn(spring(dampingRatio = 0.8f)) + scaleIn(
+                                                            initialScale = 0.93f,
+                                                            animationSpec = spring(dampingRatio = 0.72f, stiffness = 500f)
+                                                        )
                                                     }
-                                                    // Detail page → bottom bar: slide in from left
-                                                    targetRoute in bottomBarRoutes && initialRoute !in bottomBarRoutes -> {
-                                                        slideInHorizontally(initialOffsetX = { -it * animationDirection }, animationSpec = tween(300))
+                                                    "Fade" -> {
+                                                        fadeIn(animationSpec = tween(duration)) + scaleIn(
+                                                            initialScale = 0.95f,
+                                                            animationSpec = tween(duration)
+                                                        )
                                                     }
-                                                    // Bottom bar → detail page: slide in from right
-                                                    else -> slideInHorizontally(initialOffsetX = { it * animationDirection }, animationSpec = tween(300))
+                                                    "Slide" -> {
+                                                        slideInHorizontally(
+                                                            initialOffsetX = { it * offsetSign },
+                                                            animationSpec = tween(duration, easing = FastOutSlowInEasing)
+                                                        ) + fadeIn(tween(duration / 2))
+                                                    }
+                                                    else -> { // "Fluid"
+                                                        slideInHorizontally(
+                                                            initialOffsetX = { (it * 0.35f * offsetSign).toInt() },
+                                                            animationSpec = tween(duration, easing = androidx.compose.animation.core.CubicBezierEasing(0.2f, 0f, 0f, 1f))
+                                                        ) + fadeIn(tween(duration)) + scaleIn(
+                                                            initialScale = 0.94f,
+                                                            animationSpec = tween(duration, easing = androidx.compose.animation.core.CubicBezierEasing(0.2f, 0f, 0f, 1f))
+                                                        )
+                                                    }
                                                 }
                                             }
 
@@ -505,18 +543,35 @@ class MainActivity : FragmentActivity() {
                                                 val targetIndex = BottomBarDestination.entries.indexOfFirst { it.direction.route == targetRoute }
                                                 val initialIndex = BottomBarDestination.entries.indexOfFirst { it.direction.route == initialRoute }
 
-                                                when {
-                                                    // Bottom bar → bottom bar: slide out opposite direction
-                                                    targetIndex != -1 && initialIndex != -1 -> {
-                                                        val offsetSign = (if (targetIndex > initialIndex) -1 else 1) * animationDirection
-                                                        slideOutHorizontally(targetOffsetX = { it * offsetSign }, animationSpec = tween(300))
+                                                val offsetSign = (if (targetIndex != -1 && initialIndex != -1) {
+                                                    if (targetIndex > initialIndex) -1 else 1
+                                                } else {
+                                                    -1
+                                                }) * animationDirection
+
+                                                val duration = (transitionSpeedState.value * 0.8f).toInt()
+                                                when (transitionStyleState.value) {
+                                                    "Spring" -> {
+                                                        slideOutHorizontally(
+                                                            targetOffsetX = { (it * 0.35f * offsetSign).toInt() },
+                                                            animationSpec = tween(duration)
+                                                        ) + fadeOut(tween(duration)) + scaleOut(targetScale = 0.96f)
                                                     }
-                                                    // Bottom bar → detail page: slide out to left
-                                                    initialRoute in bottomBarRoutes && targetRoute !in bottomBarRoutes -> {
-                                                        slideOutHorizontally(targetOffsetX = { -it * animationDirection }, animationSpec = tween(300))
+                                                    "Fade" -> {
+                                                        fadeOut(animationSpec = tween(duration)) + scaleOut(targetScale = 0.97f)
                                                     }
-                                                    // Default
-                                                    else -> slideOutHorizontally(targetOffsetX = { -it * animationDirection }, animationSpec = tween(300))
+                                                    "Slide" -> {
+                                                        slideOutHorizontally(
+                                                            targetOffsetX = { it * offsetSign },
+                                                            animationSpec = tween(duration, easing = FastOutSlowInEasing)
+                                                        ) + fadeOut(tween(duration / 2))
+                                                    }
+                                                    else -> { // "Fluid"
+                                                        slideOutHorizontally(
+                                                            targetOffsetX = { (it * 0.35f * offsetSign).toInt() },
+                                                            animationSpec = tween(duration)
+                                                        ) + fadeOut(tween(duration)) + scaleOut(targetScale = 0.96f)
+                                                    }
                                                 }
                                             }
 
@@ -527,38 +582,80 @@ class MainActivity : FragmentActivity() {
                                                 val targetIndex = BottomBarDestination.entries.indexOfFirst { it.direction.route == targetRoute }
                                                 val initialIndex = BottomBarDestination.entries.indexOfFirst { it.direction.route == initialRoute }
 
-                                                when {
-                                                    // Bottom bar → bottom bar pop: mirror of exit
-                                                    targetIndex != -1 && initialIndex != -1 -> {
-                                                        val offsetSign = (if (targetIndex > initialIndex) 1 else -1) * animationDirection
-                                                        slideInHorizontally(initialOffsetX = { it * offsetSign }, animationSpec = tween(300))
+                                                val offsetSign = (if (targetIndex != -1 && initialIndex != -1) {
+                                                    if (targetIndex > initialIndex) 1 else -1
+                                                } else {
+                                                    -1
+                                                }) * animationDirection
+
+                                                val duration = transitionSpeedState.value
+                                                when (transitionStyleState.value) {
+                                                    "Spring" -> {
+                                                        slideInHorizontally(
+                                                            initialOffsetX = { (it * 0.35f * offsetSign).toInt() },
+                                                            animationSpec = spring(dampingRatio = 0.72f, stiffness = 500f)
+                                                        ) + fadeIn(spring(dampingRatio = 0.8f)) + scaleIn(
+                                                            initialScale = 0.93f,
+                                                            animationSpec = spring(dampingRatio = 0.72f, stiffness = 500f)
+                                                        )
                                                     }
-                                                    // Returning from detail → bottom bar: slide in from left
-                                                    targetRoute in bottomBarRoutes -> {
-                                                        slideInHorizontally(initialOffsetX = { -it * animationDirection }, animationSpec = tween(300))
+                                                    "Fade" -> {
+                                                        fadeIn(animationSpec = tween(duration)) + scaleIn(
+                                                            initialScale = 0.95f,
+                                                            animationSpec = tween(duration)
+                                                        )
                                                     }
-                                                    else -> slideInHorizontally(initialOffsetX = { -it * animationDirection }, animationSpec = tween(300))
+                                                    "Slide" -> {
+                                                        slideInHorizontally(
+                                                            initialOffsetX = { it * offsetSign },
+                                                            animationSpec = tween(duration, easing = FastOutSlowInEasing)
+                                                        ) + fadeIn(tween(duration / 2))
+                                                    }
+                                                    else -> { // "Fluid"
+                                                        slideInHorizontally(
+                                                            initialOffsetX = { (it * 0.35f * offsetSign).toInt() },
+                                                            animationSpec = tween(duration, easing = androidx.compose.animation.core.CubicBezierEasing(0.2f, 0f, 0f, 1f))
+                                                        ) + fadeIn(tween(duration)) + scaleIn(
+                                                            initialScale = 0.94f,
+                                                            animationSpec = tween(duration, easing = androidx.compose.animation.core.CubicBezierEasing(0.2f, 0f, 0f, 1f))
+                                                        )
+                                                    }
                                                 }
                                             }
 
                                             override val popExitTransition: AnimatedContentTransitionScope<NavBackStackEntry>.() -> ExitTransition = {
-                                                val targetRoute = targetState.destination.route
-                                                val initialRoute = initialState.destination.route
+                                                val targetIndex = BottomBarDestination.entries.indexOfFirst { it.direction.route == targetState.destination.route }
+                                                val initialIndex = BottomBarDestination.entries.indexOfFirst { it.direction.route == initialState.destination.route }
 
-                                                val targetIndex = BottomBarDestination.entries.indexOfFirst { it.direction.route == targetRoute }
-                                                val initialIndex = BottomBarDestination.entries.indexOfFirst { it.direction.route == initialRoute }
+                                                val offsetSign = (if (targetIndex != -1 && initialIndex != -1) {
+                                                    if (targetIndex > initialIndex) -1 else 1
+                                                } else {
+                                                    1
+                                                }) * animationDirection
 
-                                                when {
-                                                    // Bottom bar → bottom bar pop
-                                                    targetIndex != -1 && initialIndex != -1 -> {
-                                                        val offsetSign = (if (targetIndex > initialIndex) -1 else 1) * animationDirection
-                                                        slideOutHorizontally(targetOffsetX = { it * offsetSign }, animationSpec = tween(300))
+                                                val duration = (transitionSpeedState.value * 0.8f).toInt()
+                                                when (transitionStyleState.value) {
+                                                    "Spring" -> {
+                                                        slideOutHorizontally(
+                                                            targetOffsetX = { (it * 0.35f * offsetSign).toInt() },
+                                                            animationSpec = tween(duration)
+                                                        ) + fadeOut(tween(duration)) + scaleOut(targetScale = 0.96f)
                                                     }
-                                                    // Detail page closing: slide out to right
-                                                    initialRoute !in bottomBarRoutes -> {
-                                                        slideOutHorizontally(targetOffsetX = { it * animationDirection }, animationSpec = tween(300))
+                                                    "Fade" -> {
+                                                        fadeOut(animationSpec = tween(duration)) + scaleOut(targetScale = 0.97f)
                                                     }
-                                                    else -> slideOutHorizontally(targetOffsetX = { it * animationDirection }, animationSpec = tween(300))
+                                                    "Slide" -> {
+                                                        slideOutHorizontally(
+                                                            targetOffsetX = { it * offsetSign },
+                                                            animationSpec = tween(duration, easing = FastOutSlowInEasing)
+                                                        ) + fadeOut(tween(duration / 2))
+                                                    }
+                                                    else -> { // "Fluid"
+                                                        slideOutHorizontally(
+                                                            targetOffsetX = { (it * 0.35f * offsetSign).toInt() },
+                                                            animationSpec = tween(duration)
+                                                        ) + fadeOut(tween(duration)) + scaleOut(targetScale = 0.96f)
+                                                    }
                                                 }
                                             }
                                         }
@@ -683,6 +780,38 @@ class MainActivity : FragmentActivity() {
             prefs.edit().putString("ripple_color", hex).apply()
         } catch (_: Exception) {}
         rippleColorState.value = com.kimo.nixz.ui.theme.parseHexColor(hex)
+    }
+
+    fun setDarkVariant(variant: String) {
+        try {
+            val prefs = getSharedPreferences("settings", MODE_PRIVATE)
+            prefs.edit().putString("dark_variant", variant).apply()
+        } catch (_: Exception) {}
+        darkVariantState.value = variant
+    }
+
+    fun setCornerRadius(radius: Int) {
+        try {
+            val prefs = getSharedPreferences("settings", MODE_PRIVATE)
+            prefs.edit().putInt("corner_radius", radius).apply()
+        } catch (_: Exception) {}
+        cornerRadiusState.value = radius
+    }
+
+    fun setTransitionStyle(style: String) {
+        try {
+            val prefs = getSharedPreferences("settings", MODE_PRIVATE)
+            prefs.edit().putString("transition_style", style).apply()
+        } catch (_: Exception) {}
+        transitionStyleState.value = style
+    }
+
+    fun setTransitionSpeed(speed: Int) {
+        try {
+            val prefs = getSharedPreferences("settings", MODE_PRIVATE)
+            prefs.edit().putInt("transition_speed", speed).apply()
+        } catch (_: Exception) {}
+        transitionSpeedState.value = speed
     }
 
     override fun onStart() {

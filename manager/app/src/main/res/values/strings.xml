@@ -99,8 +99,8 @@
     <string name="refresh">Refresh</string>
     <string name="show_system_apps">Show system apps</string>
     <string name="hide_system_apps">Hide system apps</string>
-    <string name="export_log">Export logs</string>
-    <string name="export_log_unrooted">Export logs (non-root)</string>
+    <string name="export_log">Export log</string>
+    <string name="export_log_unrooted">Export log (non-root)</string>
     <string name="safe_mode">Safe mode</string>
     <string name="jailbreak_mode">Jailbreak mode</string>
     <string name="reboot_to_apply">Reboot to take effect</string>
@@ -388,4 +388,13 @@
     <string name="module_unknown">Unknown Module</string>
     <string name="template_example_title">Example</string>
     <string name="template_example_description">This is an example template</string>
+    <string name="settings_dark_variant">Dark theme style</string>
+    <string name="settings_dark_variant_summary">Select dark background aesthetic</string>
+    <string name="settings_corner_radius">Corner roundness</string>
+    <string name="settings_corner_radius_summary">Adjust curve radius of cards and panels</string>
+    <string name="settings_transition_style">Page transitions</string>
+    <string name="settings_transition_style_summary">Animation effect when switching screens</string>
+    <string name="settings_transition_speed">Animation speed</string>
+    <string name="settings_transition_speed_summary">Duration of transition animations</string>
+    <string name="contributor_modder">Modder</string>
 </resources>

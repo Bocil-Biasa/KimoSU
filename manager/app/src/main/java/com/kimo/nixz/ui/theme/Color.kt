@@ -21,18 +21,27 @@ val YELLOW = Color(0xFFFFEB3B)            // Yellow
 val ORANGE = Color(0xFFFF9800)            // Orange
 
 val PRESET_ACCENT_COLORS = listOf(
+    "Pixel Blue" to Color(0xFF1A73E8),
+    "KernelSU Green" to Color(0xFF2E7D32),
+    "Magisk Teal" to Color(0xFF00897B),
+    "Shamiko Orange" to Color(0xFFFB8C00),
+    "LSposed Purple" to Color(0xFF8E24AA),
+    "Zygisk Red" to Color(0xFFE53935),
+    "Viper Pink" to Color(0xFFD81B60),
+    "Neon Green" to Color(0xFF00E676),
+    "Cyan Tech" to Color(0xFF00BCD4),
+    "Amber Gold" to Color(0xFFFFB300),
     "MIUI Blue" to Color(0xFF0D84FF),
-    "Xiaomi Orange" to Color(0xFFFF6700),
-    "Catppuccin Blue" to PRIMARY,
-    "Lavender" to PRIMARY_LIGHT,
-    "Emerald Green" to Color(0xFF10B981),
-    "Crimson Red" to Color(0xFFEF4444),
-    "Cyberpunk Purple" to Color(0xFFA855F7),
-    "Sakura Pink" to Color(0xFFEC4899),
-    "Neon Cyan" to Color(0xFF06B6D4),
-    "Amber Gold" to Color(0xFFF59E0B),
-    "Midnight Indigo" to Color(0xFF6366F1)
+    "Slate Grey" to Color(0xFF546E7A)
 )
+
+val MIDNIGHT_NAVY_BG = Color(0xFF0A0E17)
+val MIDNIGHT_NAVY_SURFACE = Color(0xFF121826)
+val MIDNIGHT_NAVY_CONTAINER = Color(0xFF1B2337)
+
+val MOCHA_BG = Color(0xFF1E1E2E)
+val MOCHA_SURFACE = Color(0xFF181825)
+val MOCHA_CONTAINER = Color(0xFF313244)
 
 fun parseHexColor(hex: String?): Color? {
     if (hex.isNullOrBlank()) return null

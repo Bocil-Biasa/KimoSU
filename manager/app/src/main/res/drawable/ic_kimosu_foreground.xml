@@ -1,0 +1,89 @@
+<!-- Mod by Nixz • Dev -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:aapt="http://schemas.android.com/aapt"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+    <!-- Glow halo -->
+    <path
+        android:pathData="M 54,23 L 81,34 L 81,61 C 81,75 69,86 54,91 C 39,86 27,75 27,61 L 27,34 Z">
+        <aapt:attr name="android:fillColor">
+            <gradient
+                android:type="linear"
+                android:startX="27"
+                android:startY="23"
+                android:endX="81"
+                android:endY="91">
+                <item android:color="#3338BDF8" android:offset="0.0" />
+                <item android:color="#226366F1" android:offset="1.0" />
+            </gradient>
+        </aapt:attr>
+    </path>
+    <!-- Outer Shield Rim -->
+    <path
+        android:fillType="evenOdd"
+        android:pathData="M 54,25 L 78,35 L 78,59 C 78,72 67,82 54,86 C 41,82 30,72 30,59 L 30,35 Z M 54,30 C 42,34 35,40 35,58 C 35,69 44,77 54,81 C 64,77 73,69 73,58 C 73,40 66,34 54,30 Z">
+        <aapt:attr name="android:fillColor">
+            <gradient
+                android:type="linear"
+                android:startX="30"
+                android:startY="25"
+                android:endX="78"
+                android:endY="86">
+                <item android:color="#FF38BDF8" android:offset="0.0" />
+                <item android:color="#FF818CF8" android:offset="0.5" />
+                <item android:color="#FFC084FC" android:offset="1.0" />
+            </gradient>
+        </aapt:attr>
+    </path>
+    <!-- K Vertical Blade Pillar -->
+    <path
+        android:pathData="M 40,40 L 46,40 L 46,70 L 40,70 Z">
+        <aapt:attr name="android:fillColor">
+            <gradient
+                android:type="linear"
+                android:startX="40"
+                android:startY="40"
+                android:endX="46"
+                android:endY="70">
+                <item android:color="#FFFFFFFF" android:offset="0.0" />
+                <item android:color="#FFE0E7FF" android:offset="1.0" />
+            </gradient>
+        </aapt:attr>
+    </path>
+    <!-- K Upper Wing -->
+    <path
+        android:pathData="M 47,55 L 61,40 L 68,40 L 52,57 Z">
+        <aapt:attr name="android:fillColor">
+            <gradient
+                android:type="linear"
+                android:startX="47"
+                android:startY="40"
+                android:endX="68"
+                android:endY="57">
+                <item android:color="#FF38BDF8" android:offset="0.0" />
+                <item android:color="#FF818CF8" android:offset="1.0" />
+            </gradient>
+        </aapt:attr>
+    </path>
+    <!-- K Lower Wing -->
+    <path
+        android:pathData="M 51,56 L 68,70 L 61,70 L 47,58 Z">
+        <aapt:attr name="android:fillColor">
+            <gradient
+                android:type="linear"
+                android:startX="47"
+                android:startY="56"
+                android:endX="68"
+                android:endY="70">
+                <item android:color="#FF818CF8" android:offset="0.0" />
+                <item android:color="#FFC084FC" android:offset="1.0" />
+            </gradient>
+        </aapt:attr>
+    </path>
+    <!-- Central Kernel Core Spark -->
+    <path
+        android:fillColor="#FFFFFFFF"
+        android:pathData="M 54,49 L 56.5,54.5 L 61,55 L 56.5,55.5 L 54,61 L 51.5,55.5 L 47,55 L 51.5,54.5 Z" />
+</vector>

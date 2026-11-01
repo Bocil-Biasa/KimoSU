@@ -73,7 +73,7 @@
   <string name="refresh">Segarkan</string>
   <string name="show_system_apps">Tampilkan apl sistem</string>
   <string name="hide_system_apps">Sembunyikan apl sistem</string>
-  <string name="export_log">Ekspor log</string>
+  <string name="export_log">Export log</string>
   <string name="safe_mode">Mode aman</string>
   <string name="reboot_to_apply">Mulai ulang untuk menerapkan perubahan</string>
   <string name="module_magisk_conflict">Modul tidak tersedia karena konflik dengan Magisk!</string>
@@ -320,7 +320,7 @@
   <string name="home_lkm_custom">Modifikasi</string>
   <string name="require_kernel_version_gki">Pembaruan kernel diperlukan</string>
   <string name="select_language">Pilih bahasa</string>
-  <string name="export_log_unrooted">Ekspor log (bukan root)</string>
+  <string name="export_log_unrooted">Export log (non-root)</string>
   <string name="settings_navbar">Bilah navigasi</string>
   <string name="settings_navbar_summary">Aktifkan bilah navigasi di bagian bawah.</string>
   <string name="settings_app_lock">Kunci aplikasi</string>
@@ -386,4 +386,13 @@
   <string name="susfs_unload_in_progress">Unloading SUSFS LKM</string>
   <string name="susfs_unload_success">SUSFS LKM unloaded</string>
   <string name="susfs_unload_failed">Failed to unload SUSFS LKM</string>
+  <string name="settings_dark_variant">Gaya tema gelap</string>
+  <string name="settings_dark_variant_summary">Pilih gaya latar belakang tema gelap</string>
+  <string name="settings_corner_radius">Kelengkungan sudut kartu</string>
+  <string name="settings_corner_radius_summary">Atur kelengkungan sudut pada kartu dan panel</string>
+  <string name="settings_transition_style">Animasi transisi</string>
+  <string name="settings_transition_style_summary">Efek animasi saat berpindah halaman</string>
+  <string name="settings_transition_speed">Kecepatan animasi</string>
+  <string name="settings_transition_speed_summary">Durasi animasi transisi layar</string>
+  <string name="contributor_modder">Modder</string>
 </resources>
