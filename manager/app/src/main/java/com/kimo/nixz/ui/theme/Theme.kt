@@ -7,9 +7,6 @@ import androidx.activity.SystemBarStyle
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.ripple.LocalRippleTheme
-import androidx.compose.material.ripple.RippleAlpha
-import androidx.compose.material.ripple.RippleTheme
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
@@ -19,17 +16,6 @@ import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 
-@Suppress("DEPRECATION")
-private class CustomRippleTheme(private val color: Color) : RippleTheme {
-    @Composable
-    override fun defaultColor(): Color = color
-
-    @Composable
-    override fun rippleAlpha(): RippleAlpha = RippleTheme.defaultRippleAlpha(
-        color,
-        lightTheme = !isSystemInDarkTheme()
-    )
-}
 
 private val DarkColorScheme = darkColorScheme(
     primary = PRIMARY,
@@ -145,7 +131,6 @@ fun KernelSUTheme(
         content = {
             if (rippleColor != null) {
                 CompositionLocalProvider(
-                    LocalRippleTheme provides CustomRippleTheme(rippleColor),
                     LocalRippleConfiguration provides RippleConfiguration(color = rippleColor)
                 ) {
                     content()
